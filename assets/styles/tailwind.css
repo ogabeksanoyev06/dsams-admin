@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+
+    --ring: 224 71.4% 4.1%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+
+    --ring: 216 12.2% 83.9%;
+
+    --sidebar-background: 215 27.9% 16.9%; /* Dark theme sidebar background */
+    --sidebar-foreground: 210 20% 98%; /* Dark theme sidebar foreground */
+    --sidebar-border: 215 27.9% 16.9%; /* Dark theme sidebar border */
+    --sidebar-accent: 215 27.9% 16.9%; /* Dark theme sidebar accent */
+
+    /* Additional color variables for the sidebar in the dark theme */
+    --sidebar-primary: 210 20% 98%; /* Dark theme sidebar primary */
+    --sidebar-muted: 215 27.9% 16.9%; /* Dark theme sidebar muted */
+    --sidebar-secondary: 215 27.9% 16.9%; /* Dark theme sidebar secondary */
+    --sidebar-accent-foreground: 210 20% 98%; /* Dark theme sidebar accent foreground */
+    --sidebar-destructive: 0 62.8% 30.6%; /* Dark theme sidebar destructive */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utils {
+  .transition-300 {
+    @apply transition-all duration-300;
+  }
+  .transition-200 {
+    @apply transition-all duration-200;
+  }
+  .absolute-x {
+    @apply absolute !-translate-x-1/2 !left-1/2;
+  }
+  .absolute-y {
+    @apply absolute !-translate-y-1/2 !top-1/2;
+  }
+  .absolute-center {
+    @apply absolute-x absolute-y;
+  }
+  .flex-y-center {
+    @apply flex items-center;
+  }
+  .flex-x-center {
+    @apply flex justify-center;
+  }
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  .flex-center-between {
+    @apply flex justify-between items-center;
+  }
+  .flex-between {
+    @apply flex justify-between;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-[1520px];
+  }
+}
+
+.word-break-break-word {
+  word-break: break-word;
+}
+
+.image-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-loading:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholderShimmer;
+  animation-timing-function: linear;
+}
+.section-title {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 38px;
+  letter-spacing: 0;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19px;
+  letter-spacing: 0;
+}
+
+.ql-editor {
+  min-height: 100px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .section-title {
+    font-size: 24px;
+  }
+  .section-subtitle {
+    font-size: 16px;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-enter-active {
+  animation: fade 0.3s ease-in-out;
+}
+
+.fade-leave-active {
+  animation: fade 0.3s ease-in-out reverse;
+}
+.fade-fast-enter-active {
+  animation: fade 0.1s ease-in-out;
+}
+
+.fade-fast-leave-active {
+  animation: fade 0.1s ease-in-out reverse;
+}

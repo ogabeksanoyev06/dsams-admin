@@ -1,0 +1,34 @@
+<script setup lang="ts">
+import type { HTMLAttributes } from 'vue'
+import { cn } from '@/lib/utils'
+import { useVModel } from '@vueuse/core'
+
+const props = defineProps<{
+  defaultValue?: string | number
+  modelValue?: string | number
+  class?: HTMLAttributes['class']
+  error?: Boolean
+}>()
+
+const emits = defineEmits<{
+  (e: 'update:modelValue', payload: string | number): void
+}>()
+
+const modelValue = useVModel(props, 'modelValue', emits, {
+  passive: true,
+  defaultValue: props.defaultValue,
+})
+</script>
+
+<template>
+  <input
+    v-model="modelValue"
+    :class="
+      cn(
+        'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm  transition-300 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none outline-none focus:border-primary   disabled:cursor-not-allowed ',
+        props.class,
+        { '!border-destructive bg-destructive/5': props.error }
+      )
+    "
+  />
+</template>
