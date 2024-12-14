@@ -1,26 +1,36 @@
 <script setup>
 import { useCustomToast } from '@/composables/useCustomToast.js'
 import { Trash2 } from 'lucide-vue-next'
+import { useStandardsStore } from '@/stores/standards.js'
 
-const emit = defineEmits(['standard-deleted'])
+const emit = defineEmits(['delete-standard'])
 
 const props = defineProps({
-  standardId: String,
+  standardId: [String, Number],
 })
 
 const { showToast } = useCustomToast()
 
+const standardsStore = useStandardsStore()
+
+const { deleteStandardById } = standardsStore
+
 const isOpen = ref(false)
+const loading = ref(false)
 
 const confirmDelete = async () => {
   try {
-    // if (response?.status === 'success') {
-    showToast("Blog o'chirildi.", 'success')
-    emit('standard-deleted')
-    isOpen.value = false
-    // }
+    loading.value = true
+    const res = await deleteStandardById(props.standardId)
+    if (res.status) {
+      showToast("Standard o'chirildi.", 'success')
+      emit('delete-sector')
+      isOpen.value = false
+    }
   } catch (error) {
-    showToast("Blog o'chirishda xatolik", 'error')
+    showToast("Standard o'chirishda xatolik", 'error')
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -28,7 +38,7 @@ const confirmDelete = async () => {
   <div>
     <Dialog v-model:open="isOpen">
       <DialogTrigger as-child>
-        <Trash2 class="text-white cursor-pointer h-5 w-5 hover:text-destructive" />
+        <Trash2 class="cursor-pointer h-5 w-5 text-destructive" />
       </DialogTrigger>
       <DialogContent class="sm:max-w-[600px] p-4">
         <div class="pt-6 p-5 flex flex-col items-center text-center">
@@ -40,13 +50,13 @@ const confirmDelete = async () => {
               />
             </svg>
           </div>
-          <h2 class="mt-4 mb-1 text-xl  font-semibold leading-130">Вы точно хотите удалить</h2>
-          <p class="leading-130 text-gray-700 text-sm">Вы уверены, что хотите удалить пользователя "Ахмаджон Санакулов"?</p>
+          <h2 class="mt-4 mb-1 text-xl font-semibold leading-130">Siz aniq o'chirishni xohlaysizmi</h2>
+          <p class="leading-130 text-gray-700 text-sm">Ma'lumotni o'chirib tashlamoqchimisiz?</p>
           <div class="flex gap-2 w-full mt-7">
             <DialogClose asChild>
               <Button size="lg" class="w-full"> Отменить </Button>
             </DialogClose>
-            <Button variant="destructive" size="lg" class="w-full" @click="confirmDelete"> Удалить </Button>
+            <Button variant="destructive" size="lg" class="w-full" :disabled="loading" @click="confirmDelete"> Удалить </Button>
           </div>
         </div>
       </DialogContent>

@@ -1,12 +1,13 @@
 <script setup>
 import { reactive } from 'vue'
 import { Edit3Icon } from 'lucide-vue-next'
-import { useSectorsStore } from '@/stores/sectors.js'
+import { useSectionsStore } from '@/stores/section.js'
 import { useCustomToast } from '@/composables/useCustomToast.js'
 
-const emit = defineEmits(['edit-sector'])
+const emit = defineEmits(['edit-section'])
 
 const props = defineProps({
+  sectionId: [String, Number],
   sectorId: [String, Number],
 })
 
@@ -14,13 +15,13 @@ const { locale } = useI18n()
 
 const { showToast } = useCustomToast()
 
-const sectorsStore = useSectorsStore()
+const sectionsStore = useSectionsStore()
 
-const { editSectorById, getSectorById } = sectorsStore
+const { editSectionById, getSectionById } = sectionsStore
 
 const languages = ['uz', 'ru', 'en']
 
-const loadingBlogId = ref(false)
+const loadingSectionId = ref(false)
 const loading = ref(false)
 
 const form = reactive({
@@ -37,30 +38,29 @@ const resetForm = () => {
 
 const fetchSectorById = async () => {
   try {
-    loadingBlogId.value = false
-    const response = await getSectorById(props.sectorId, {
-      lang: locale.value,
-    })
-    form.title = { uz: response.data.sektor.name_uz, ru: response.data.sektor.name_ru, en: response.data.sektor.name_en }
+    loadingSectionId.value = false
+    const response = await getSectionById(props.sectionId)
+    form.title = { uz: response.data.name_uz, ru: response.data.name_ru, en: response.data.name_en }
   } catch (error) {
     console.error(error)
   } finally {
-    loadingBlogId.value = true
+    loadingSectionId.value = true
   }
 }
 
 const handleSubmitForm = async () => {
   try {
     loading.value = true
-    const res = await editSectorById(props.sectorId, {
+    const res = await editSectionById(props.sectionId, {
       name_uz: form.title.uz,
       name_ru: form.title.ru,
       name_en: form.title.en,
+      sektor: props.sectorId,
     })
     if (res.status) {
       showToast('Muvaffaqiyatli saqlandi', 'success')
       resetForm()
-      emit('edit-sector')
+      emit('edit-section')
     }
   } catch (error) {
     console.log(error)
@@ -102,7 +102,7 @@ watch(isOpen, (newVal) => {
                 </div>
               </div>
               <div class="flex justify-end">
-                <Button size="lg" :loa type="submit" class="mt-6">Saqlash</Button>
+                <Button size="lg" :loading="loading" type="submit" class="mt-6">Saqlash</Button>
               </div>
             </VForm>
           </TabsContent>

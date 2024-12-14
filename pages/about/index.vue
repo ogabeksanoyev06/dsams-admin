@@ -94,5 +94,14 @@ const handleSubmitForm = async () => {
   }
 }
 
-// const { data } = await useAsyncData('about', () => getAbout({ lang: tab.value }))
+const { data: about } = await useAsyncData('about', () => getAbout())
+if (about.value) {
+  form.photo_url = about.value.data.photo_url
+  form.title.uz = about.value.data.title_uz
+  form.title.ru = about.value.data.title_ru
+  form.title.en = about.value.data.title_en
+  form.description.uz = about.value.data.description_uz
+  form.description.ru = about.value.data.description_ru
+  form.description.en = about.value.data.description_en
+}
 </script>

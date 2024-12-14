@@ -5,6 +5,10 @@ import { useCustomToast } from '@/composables/useCustomToast.js'
 
 const emit = defineEmits(['create-section'])
 
+const props = defineProps({
+  sectorId: [String, Number],
+})
+
 const { showToast } = useCustomToast()
 
 const sectionStore = useSectionsStore()
@@ -30,10 +34,11 @@ const resetForm = () => {
 const handleSubmitForm = async () => {
   try {
     loading.value = true
-    const res = await createSector({
+    const res = await createSection({
       name_uz: form.title.uz,
       name_ru: form.title.ru,
       name_en: form.title.en,
+      sektor: props.sectorId,
     })
     if (res.status) {
       showToast("Bo'lim qo'shildi", 'success')

@@ -1,19 +1,19 @@
 <script setup>
 import { useCustomToast } from '@/composables/useCustomToast.js'
 import { Trash2 } from 'lucide-vue-next'
-import { useSectorsStore } from '@/stores/sectors.js'
+import { useSectionsStore } from '@/stores/section.js'
 
-const emit = defineEmits(['delete-sector'])
+const emit = defineEmits(['delete-section'])
 
 const props = defineProps({
-  sectorId: [String, Number],
+  sectionId: [String, Number],
 })
 
 const { showToast } = useCustomToast()
 
-const sectorStore = useSectorsStore()
+const sectionStore = useSectionsStore()
 
-const { deleteSectorById, getSectors } = sectorStore
+const { deleteSectionById } = sectionStore
 
 const isOpen = ref(false)
 const loading = ref(false)
@@ -21,15 +21,14 @@ const loading = ref(false)
 const confirmDelete = async () => {
   try {
     loading.value = true
-    const res = await deleteSectorById(props.sectorId)
+    const res = await deleteSectionById(props.sectionId)
     if (res.status) {
-      showToast("Sektor o'chirildi.", 'success')
-      emit('delete-sector')
+      showToast("Bo'lim o'chirildi.", 'success')
+      emit('delete-section')
       isOpen.value = false
-      getSectors()
     }
   } catch (error) {
-    showToast("Sektor o'chirishda xatolik", 'error')
+    showToast("Bo'lim o'chirishda xatolik", 'error')
   } finally {
     loading.value = false
   }
@@ -57,7 +56,7 @@ const confirmDelete = async () => {
             <DialogClose asChild>
               <Button size="lg" class="w-full"> Отменить </Button>
             </DialogClose>
-            <Button variant="destructive" size="lg" class="w-full" @click="confirmDelete"> Удалить </Button>
+            <Button variant="destructive" size="lg" class="w-full" :disabled="loading" @click="confirmDelete"> Удалить </Button>
           </div>
         </div>
       </DialogContent>

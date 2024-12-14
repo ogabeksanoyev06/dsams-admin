@@ -32,7 +32,7 @@ const loaderFill = computed(() => {
       <slot />
     </span>
     <transition name="fade" mode="out-in">
-      <span v-if="loading" class="absolute-center z-10 !inline-block w-max h-max loading transition-300">
+      <span v-if="props.loading" class="absolute-center z-10 !inline-block w-max h-max loading transition-300">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" font-size="48" class="animate-spin iconify iconify--ph w-5 h-5" width="1em" height="1em" viewBox="0 0 256 256" v-if="loading">
           <path
             fill="#fff"

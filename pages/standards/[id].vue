@@ -4,9 +4,7 @@
     <div class="flex justify-end mt-5">
       <ModalQuestionCreate />
     </div>
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 sm:mt-10">
-      <CardQuestion v-for="(item, key) in 5" :key="key" />
-    </section>
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 sm:mt-10"></section>
   </div>
 </template>
 

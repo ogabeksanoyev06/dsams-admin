@@ -50,7 +50,7 @@ export const useStandardsStore = defineStore('standards', () => {
   const deleteStandardById = async (id) => {
     loading.value = true
     try {
-      const response = await api.delete(`admins/Standard/${id}`)
+      const response = await api.delete(`admins/standarts/${id}`)
       return response.data
     } catch (error) {
       throw error

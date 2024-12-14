@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1 class="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight mb-6">Bo'lim qo'shish</h1>
+    <h1 class="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight">Bo'limlar</h1>
+    <p class="font-medium text-base md:text-lg mb-6">{{ sections?.data[0]?.name }}</p>
     <div class="flex justify-end mt-5">
-      <ModalSectionCreate @create-sector="handleAddSector" />
+      <ModalSectionCreate @create-section="handleAddSector" :sector-id="route.params.id" />
     </div>
-    {{ sections }}
     <div class="border mt-10 rounded-xl">
       <Table>
         <TableHeader>
@@ -15,25 +15,23 @@
             <TableHead>Amallar</TableHead>
           </TableRow>
         </TableHeader>
-        <!-- <TableBody class="font-medium">
-          <TableRow v-for="(item, key) in sectors.data" class="odd:bg-gray-100">
+        <TableBody class="font-medium">
+          <TableRow v-for="(item, key) in sections.data" class="odd:bg-gray-100">
             <TableCell>
               {{ key + 1 }}
             </TableCell>
-            <NuxtLink :to="`/sectors/${item._id}`" class="text-blue-800">
-              <TableCell>
-                {{ item.name }}
-              </TableCell>
-            </NuxtLink>
+            <TableCell>
+              {{ item.name }}
+            </TableCell>
             <TableCell>
               {{ $dayjs(item.createdAt).format('DD.MM.YYYY HH:mm:ss') }}
             </TableCell>
             <TableCell class="flex items-center gap-2">
-              <ModalSectorEdit :sectorId="item._id" @edit-sector="handleEditSector" />
-              <ModalSectorDelete :sectorId="item._id" @delete-sector="handleDeleteSector" />
+              <ModalSectionEdit :sectionId="item._id" @edit-section="handleEditSector" />
+              <ModalSectionDelete :sectionId="item._id" :sectorId="route.params.id" @delete-section="handleDeleteSector" />
             </TableCell>
           </TableRow>
-        </TableBody> -->
+        </TableBody>
       </Table>
     </div>
   </div>
@@ -41,10 +39,13 @@
 
 <script setup>
 import { useSectionsStore } from '@/stores/section.js'
+import { useSectorsStore } from '@/stores/sectors.js'
 
 const sectionStore = useSectionsStore()
+const sectorsStore = useSectorsStore()
 
 const { getSections, getSectionById } = sectionStore
+const { getSectorById } = sectorsStore
 
 const { locale } = useI18n()
 const route = useRoute()
@@ -73,9 +74,10 @@ const {
   data: sections,
   refresh,
   pending,
-} = await useAsyncData('sections', async () => {
-  return await getSectionById(route.params.id, {
+} = await useAsyncData('sector-by-id', async () => {
+  return await getSections({
     lang: locale.value,
+    'filter[sektor]': route.params.id,
   })
 })
 </script>

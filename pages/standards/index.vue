@@ -4,7 +4,6 @@
     <div class="flex justify-end mt-5">
       <ModalStandardCreate />
     </div>
-    {{ standards }}
     <div class="border mt-10 rounded-xl">
       <Table>
         <TableHeader>
@@ -15,12 +14,12 @@
             <TableHead>Amallar</TableHead>
           </TableRow>
         </TableHeader>
-        <!-- <TableBody class="font-medium">
-          <TableRow v-for="(item, key) in sectors.data" class="odd:bg-gray-100">
+        <TableBody class="font-medium">
+          <TableRow v-for="(item, key) in standards.data" class="odd:bg-gray-100">
             <TableCell>
               {{ key + 1 }}
             </TableCell>
-            <NuxtLink :to="`/sectors/${item._id}`" class="text-blue-800">
+            <NuxtLink :to="`/standards/${item._id}`" class="text-blue-800">
               <TableCell>
                 {{ item.name }}
               </TableCell>
@@ -33,7 +32,7 @@
               <ModalStandardDelete :standardId="item._id" @delete-sector="handleDeleteSector" />
             </TableCell>
           </TableRow>
-        </TableBody> -->
+        </TableBody>
       </Table>
     </div>
   </div>
