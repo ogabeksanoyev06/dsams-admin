@@ -28,8 +28,8 @@
               {{ $dayjs(item.createdAt).format('DD.MM.YYYY HH:mm:ss') }}
             </TableCell>
             <TableCell class="flex items-center gap-2">
-              <ModalStandardEdit :standardId="item._id" @edit-sector="handleEditSector" />
-              <ModalStandardDelete :standardId="item._id" @delete-sector="handleDeleteSector" />
+              <ModalStandardEdit :standardId="item._id" @edit-standard="handleEditSector" />
+              <ModalStandardDelete :standardId="item._id" @delete-standard="handleDeleteSector" />
             </TableCell>
           </TableRow>
         </TableBody>

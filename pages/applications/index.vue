@@ -31,6 +31,7 @@
           <TableHead>Telefon raqam</TableHead>
           <TableHead>Manzil</TableHead>
           <TableHead>Yuborilgan sana</TableHead>
+          <TableHead>Ko'rib chiqish muddati</TableHead>
           <TableHead>Status</TableHead>
           <TableHead class="text-right">Amallar</TableHead>
         </TableRow>
@@ -46,8 +47,11 @@
             {{ $dayjs(item.company.date).format('DD.MM.YYYY HH:mm:ss') }}
           </TableCell>
           <TableCell>
-            <span :class="item.status === 0 ? 'text-red-500' : 'text-green-500'">
-              {{ item.status === 0 ? 'Kutilmoqda' : 'Tasdiqlangan' }}
+            {{ $dayjs(item.date).format('DD.MM.YYYY HH:mm:ss') }}
+          </TableCell>
+          <TableCell>
+            <span :class="getStatusClass(item.status)">
+              {{ getStatusText(item.status) }}
             </span>
           </TableCell>
           <TableCell class="text-right">
@@ -66,15 +70,15 @@
                     Batafsil
                   </NuxtLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem class="cursor-pointer">
+                <DropdownMenuItem class="cursor-pointer" @click="handleAccept(item._id)">
                   <CheckCircleIcon class="size-4 text-green-500" />
                   Qabul qilish
                 </DropdownMenuItem>
-                <DropdownMenuItem class="cursor-pointer">
+                <DropdownMenuItem class="cursor-pointer" @click="handleDecline(item._id)">
                   <CrossIcon class="size-4 text-destructive" />
-                  Rad etish
+                  Bekor qilish
                 </DropdownMenuItem>
-                <DropdownMenuItem class="cursor-pointer">
+                <DropdownMenuItem class="cursor-pointer" @click="handleFinish(item._id)">
                   <ClipboardCheckIcon class="size-4 text-blue-500" />
                   Yakunlash
                 </DropdownMenuItem>
@@ -104,10 +108,13 @@
 <script setup>
 import { useApplicationsStore } from '@/stores/applications.js'
 import { CheckCircleIcon, ClipboardCheckIcon, CrossIcon, EllipsisIcon, Eye, EyeIcon, Search } from 'lucide-vue-next'
+import { useCustomToast } from '@/composables/useCustomToast.js'
+
+const { showToast } = useCustomToast()
 
 const applicationsStore = useApplicationsStore()
 
-const { getApplications } = applicationsStore
+const { getApplications, cancelApplication, approveApplication, completeApplication } = applicationsStore
 
 const data = [
   {
@@ -139,8 +146,60 @@ const currentPage = ref(1)
 const totalPages = ref(10)
 const totalItems = ref(0)
 
+const getStatusClass = (status) => {
+  switch (status) {
+    case 0:
+      return 'text-red-500'
+    case 1:
+      return 'text-yellow-500'
+    case 2:
+      return 'text-blue-500'
+    case 3:
+      return 'text-green-500'
+    case -1:
+      return 'text-gray-500'
+    default:
+      return ''
+  }
+}
+
+const getStatusText = (status) => {
+  switch (status) {
+    case 0:
+      return 'Kutilmoqda'
+    case 1:
+      return 'Tasdiqlangan'
+    case 2:
+      return 'Ekspert tasdiqlash'
+    case 3:
+      return 'Yakunlangan'
+    case -1:
+      return 'Bekor qilingan'
+    default:
+      return ''
+  }
+}
+
 const handlePageChange = (page) => {
   currentPage.value = page
+}
+
+const handleAccept = async (id) => {
+  await approveApplication(id)
+  showToast('Muvaffaqiyatli qabul qilindi', 'success')
+  refresh()
+}
+
+const handleDecline = async (id) => {
+  await cancelApplication(id)
+  showToast('Muvaffaqiyatli bekor qilindi', 'success')
+  refresh()
+}
+
+const handleFinish = async (id) => {
+  await completeApplication(id)
+  showToast('Muvaffaqiyatli yakunlandi', 'success')
+  refresh()
 }
 
 const {
@@ -152,7 +211,6 @@ const {
   async () => {
     return await getApplications({
       lang: 'uz',
-      filter: { status: 0 },
       limit: itemsPerPage.value,
       page: currentPage.value,
     })

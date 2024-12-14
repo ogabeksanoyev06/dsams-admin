@@ -1,5 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
+import { useStandardsStore } from '@/stores/standards.js'
+import { useCustomToast } from '@/composables/useCustomToast.js'
 
 const QuillWrapper = defineAsyncComponent({
   loader: async () => {
@@ -11,15 +13,25 @@ const QuillWrapper = defineAsyncComponent({
 
 const emit = defineEmits(['create-question'])
 
+const props = defineProps({
+  standardId: [String, Number],
+})
+
+const { showToast } = useCustomToast()
+
+const standardsStore = useStandardsStore()
+
+const { editStandardById, getStandardById } = standardsStore
+
 const form = reactive({
   title: { uz: '', ru: '', en: '' },
   description: { uz: '', ru: '', en: '' },
-  content: { uz: '', ru: '', en: '' },
-  image: { uz: null, ru: null, en: null },
 })
 
 const tab = ref('uz')
 const isOpen = ref(false)
+
+const loading = ref(false)
 
 const resetForm = () => {
   form.title = { uz: '', ru: '', en: '' }
@@ -27,7 +39,32 @@ const resetForm = () => {
   isOpen.value = false
 }
 
-const handleSubmitForm = async () => {}
+const handleSubmitForm = async () => {
+  try {
+    loading.value = true
+    const res = await editStandardById(props.standardId, {
+      questions: [
+        {
+          title_uz: form.title.uz,
+          title_ru: form.title.ru,
+          title_en: form.title.en,
+          description_uz: form.description.uz,
+          description_ru: form.description.ru,
+          description_en: form.description.en,
+        },
+      ],
+    })
+    if (res.status) {
+      showToast("Savol qo'shildi", 'success')
+      resetForm()
+      emit('create-question')
+    }
+  } catch (error) {
+    showToast(error.response.data.message, 'error')
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -69,13 +106,13 @@ const handleSubmitForm = async () => {}
                 <VField :name="`description.${tab}`" rules="required" v-model="form.description[tab]">
                   <Label :for="`description.${tab}`" class="mb-1.5">Tasnif</Label>
                   <ClientOnly>
-                    <QuillWrapper class="w-full" contentType="html" theme="snow" v-model:content="form.content[tab]" placeholder="Matnni shu yerga yozing..." />
+                    <QuillWrapper class="w-full" contentType="html" theme="snow" v-model:content="form.description[tab]" placeholder="Matnni shu yerga yozing..." />
                   </ClientOnly>
                 </VField>
               </div>
             </div>
             <div class="flex justify-end">
-              <Button size="lg" type="submit" class="mt-6">Saqlash</Button>
+              <Button size="lg" type="submit" class="mt-6" :loading="loading">Saqlash</Button>
             </div>
           </VForm>
         </Tabs>

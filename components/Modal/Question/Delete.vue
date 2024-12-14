@@ -5,7 +5,7 @@ import { Trash2 } from 'lucide-vue-next'
 const emit = defineEmits(['blog-deleted'])
 
 const props = defineProps({
-  blogId: String,
+  standardId: [String, Number],
 })
 
 const { showToast } = useCustomToast()
