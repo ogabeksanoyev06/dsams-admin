@@ -106,7 +106,6 @@ watch(isOpen, (newVal) => {
         <DialogHeader>
           <DialogTitle> Savol qo'shish</DialogTitle>
         </DialogHeader>
-        {{ questions }}
         <Tabs default-value="uz" v-model="tab">
           <TabsList class="inline-flex mb-6">
             <TabsTrigger value="uz"> O'zbekcha </TabsTrigger>
