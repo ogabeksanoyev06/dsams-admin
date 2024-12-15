@@ -39,20 +39,34 @@ const resetForm = () => {
   isOpen.value = false
 }
 
+const questions = ref([])
+
+const fetchStandard = async () => {
+  try {
+    const response = await getStandardById(props.standardId)
+    console.log(response)
+    questions.value = response.data.questions
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const handleSubmitForm = async () => {
   try {
     loading.value = true
+    const updatedQuestions = [
+      ...questions.value,
+      {
+        title_uz: form.title.uz,
+        title_ru: form.title.ru,
+        title_en: form.title.en,
+        description_uz: form.description.uz,
+        description_ru: form.description.ru,
+        description_en: form.description.en,
+      },
+    ]
     const res = await editStandardById(props.standardId, {
-      questions: [
-        {
-          title_uz: form.title.uz,
-          title_ru: form.title.ru,
-          title_en: form.title.en,
-          description_uz: form.description.uz,
-          description_ru: form.description.ru,
-          description_en: form.description.en,
-        },
-      ],
+      questions: updatedQuestions,
     })
     if (res.status) {
       showToast("Savol qo'shildi", 'success')
@@ -65,6 +79,10 @@ const handleSubmitForm = async () => {
     loading.value = false
   }
 }
+
+watch(isOpen, (newVal) => {
+  if (newVal) fetchStandard()
+})
 </script>
 
 <template>
@@ -88,6 +106,7 @@ const handleSubmitForm = async () => {
         <DialogHeader>
           <DialogTitle> Savol qo'shish</DialogTitle>
         </DialogHeader>
+        {{ questions }}
         <Tabs default-value="uz" v-model="tab">
           <TabsList class="inline-flex mb-6">
             <TabsTrigger value="uz"> O'zbekcha </TabsTrigger>
