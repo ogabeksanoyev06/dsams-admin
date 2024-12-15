@@ -53,12 +53,12 @@ const fetchStandard = async () => {
     const res = await getStandardById(props.standardId)
     if (res.status) {
       questions.value = res.data.questions
-      form.title.uz = res.data.questions[props.keyQuestion].title_uz
-      form.title.ru = res.data.questions[props.keyQuestion].title_ru
-      form.title.en = res.data.questions[props.keyQuestion].title_en
-      form.description.uz = res.data.questions[props.keyQuestion].description_uz
-      form.description.ru = res.data.questions[props.keyQuestion].description_ru
-      form.description.en = res.data.questions[props.keyQuestion].description_en
+      form.title.uz = res.data.questions[props.keyQuestion]?.title_uz
+      form.title.ru = res.data.questions[props.keyQuestion]?.title_ru
+      form.title.en = res.data.questions[props.keyQuestion]?.title_en
+      form.description.uz = res.data.questions[props.keyQuestion]?.description_uz
+      form.description.ru = res.data.questions[props.keyQuestion]?.description_ru
+      form.description.en = res.data.questions[props.keyQuestion]?.description_en
     }
   } catch (error) {
     console.log(error)
@@ -114,6 +114,7 @@ watch(isOpen, (newVal) => {
         <DialogHeader>
           <DialogTitle> Savol qo'shish</DialogTitle>
         </DialogHeader>
+        {{ props.keyQuestion }}
         <Transition name="fade" mode="out-in">
           <template v-if="loadingStandardId">
             <div class="grid gap-3">
