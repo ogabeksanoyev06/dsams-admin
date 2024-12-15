@@ -114,7 +114,6 @@ watch(isOpen, (newVal) => {
         <DialogHeader>
           <DialogTitle> Savol qo'shish</DialogTitle>
         </DialogHeader>
-        {{ props.keyQuestion }}{{ form }}
         <Transition name="fade" mode="out-in">
           <template v-if="loadingStandardId">
             <div class="grid gap-3">
