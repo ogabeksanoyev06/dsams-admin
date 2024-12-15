@@ -17,7 +17,7 @@
           </TableRow>
         </TableHeader>
         <TableBody class="font-medium">
-          <TableRow v-for="(item, key) in data.data?.questions" class="odd:bg-gray-100">
+          <TableRow v-for="(item, key) in data.data?.questions" :key class="odd:bg-gray-100">
             <TableCell>
               {{ key + 1 }}
             </TableCell>
@@ -31,7 +31,7 @@
               {{ $dayjs(item.createdAt).format('DD.MM.YYYY HH:mm:ss') }}
             </TableCell>
             <TableCell class="flex items-center gap-2">
-              <ModalQuestionEdit :standardId="route.params.id" @edit-question="handleEditQuestion" />
+              <ModalQuestionEdit :standardId="route.params.id" :keyQuestion="key" :questionId="item._id" @edit-question="handleEditQuestion" />
             </TableCell>
           </TableRow>
         </TableBody>

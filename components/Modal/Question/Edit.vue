@@ -12,10 +12,14 @@ const QuillWrapper = defineAsyncComponent({
   ssr: false,
 })
 
+const languages = ['uz', 'ru', 'en']
+
 const emit = defineEmits(['edit-question'])
 
 const props = defineProps({
   standardId: [String, Number],
+  keyQuestion: [String, Number],
+  questionId: [String, Number],
 })
 
 const { showToast } = useCustomToast()
@@ -41,17 +45,20 @@ const resetForm = () => {
   isOpen.value = false
 }
 
+const questions = ref([])
+
 const fetchStandard = async () => {
   try {
     loadingStandardId.value = true
     const res = await getStandardById(props.standardId)
     if (res.status) {
-      form.title.uz = res.data.questions[0].title_uz
-      form.title.ru = res.data.questions[0].title_ru
-      form.title.en = res.data.questions[0].title_en
-      form.description.uz = res.data.questions[0].description_uz
-      form.description.ru = res.data.questions[0].description_ru
-      form.description.en = res.data.questions[0].description_en
+      questions.value = res.data.questions
+      form.title.uz = res.data.questions[props.keyQuestion].title_uz
+      form.title.ru = res.data.questions[props.keyQuestion].title_ru
+      form.title.en = res.data.questions[props.keyQuestion].title_en
+      form.description.uz = res.data.questions[props.keyQuestion].description_uz
+      form.description.ru = res.data.questions[props.keyQuestion].description_ru
+      form.description.en = res.data.questions[props.keyQuestion].description_en
     }
   } catch (error) {
     console.log(error)
@@ -63,17 +70,22 @@ const fetchStandard = async () => {
 const handleSubmitForm = async () => {
   try {
     loading.value = true
-    const res = await editStandardById(props.standardId, {
-      questions: [
-        {
+    const updatedQuestions = questions.value.map((question) => {
+      if (question._id == props.questionId) {
+        console.log(question, question._id === props.questionId)
+        return {
           title_uz: form.title.uz,
           title_ru: form.title.ru,
           title_en: form.title.en,
           description_uz: form.description.uz,
           description_ru: form.description.ru,
           description_en: form.description.en,
-        },
-      ],
+        }
+      }
+      return question
+    })
+    const res = await editStandardById(props.standardId, {
+      questions: updatedQuestions,
     })
     if (res.status) {
       showToast("Savol o'zgartirildi", 'success')
@@ -110,34 +122,38 @@ watch(isOpen, (newVal) => {
             </div>
           </template>
           <template v-else>
-            <Tabs default-value="uz" v-model="tab">
-              <TabsList class="inline-flex mb-6">
-                <TabsTrigger value="uz"> O'zbekcha </TabsTrigger>
-                <TabsTrigger value="ru"> Русский </TabsTrigger>
-                <TabsTrigger value="en"> English </TabsTrigger>
-              </TabsList>
-              <VForm @submit="handleSubmitForm" v-slot="{ errors }">
-                <div class="grid md:grid-cols-12 gap-5">
-                  <div class="grid md:col-span-12 w-full items-center gap-1.5">
-                    <VField :name="`title.${tab}`" rules="required" v-model="form.title[tab]">
-                      <Label :for="`title.${tab}`">Sarlavha</Label>
-                      <Input :id="`title.${tab}`" type="text" v-model="form.title[tab]" :error="errors?.[`title.${tab}`]" />
-                    </VField>
-                  </div>
-                  <div class="grid md:col-span-12 w-full items-center">
-                    <VField :name="`description.${tab}`" rules="required" v-model="form.description[tab]">
-                      <Label :for="`description.${tab}`" class="mb-1.5">Tasnif</Label>
-                      <ClientOnly>
-                        <QuillWrapper class="w-full" contentType="html" theme="snow" v-model:content="form.description[tab]" placeholder="Matnni shu yerga yozing..." />
-                      </ClientOnly>
-                    </VField>
-                  </div>
-                </div>
-                <div class="flex justify-end">
-                  <Button size="lg" type="submit" class="mt-6" :loading="loading">Saqlash</Button>
-                </div>
-              </VForm>
-            </Tabs>
+            <div>
+              <Tabs default-value="uz" v-model="tab">
+                <TabsList class="inline-flex mb-6">
+                  <TabsTrigger value="uz"> O'zbekcha </TabsTrigger>
+                  <TabsTrigger value="ru"> Русский </TabsTrigger>
+                  <TabsTrigger value="en"> English </TabsTrigger>
+                </TabsList>
+                <TabsContent :value="lang" v-for="lang in languages" :key="lang" v-show="tab === lang">
+                  <VForm @submit="handleSubmitForm" v-slot="{ errors }">
+                    <div class="grid md:grid-cols-12 gap-5">
+                      <div class="grid md:col-span-12 w-full items-center gap-1.5">
+                        <VField :name="`title.${tab}`" rules="required" v-model="form.title[tab]">
+                          <Label :for="`title.${tab}`">Sarlavha</Label>
+                          <Input :id="`title.${tab}`" type="text" v-model="form.title[tab]" :error="errors?.[`title.${tab}`]" />
+                        </VField>
+                      </div>
+                      <div class="grid md:col-span-12 w-full items-center">
+                        <VField :name="`description.${tab}`" rules="required" v-model="form.description[tab]">
+                          <Label :for="`description.${tab}`" class="mb-1.5">Tasnif</Label>
+                          <ClientOnly>
+                            <QuillWrapper class="w-full" contentType="html" theme="snow" v-model:content="form.description[tab]" placeholder="Matnni shu yerga yozing..." />
+                          </ClientOnly>
+                        </VField>
+                      </div>
+                    </div>
+                    <div class="flex justify-end">
+                      <Button size="lg" type="submit" class="mt-6" :loading="loading">Saqlash</Button>
+                    </div>
+                  </VForm>
+                </TabsContent>
+              </Tabs>
+            </div>
           </template>
         </Transition>
       </DialogContent>

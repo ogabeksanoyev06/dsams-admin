@@ -28,6 +28,8 @@ const form = reactive({
   description: { uz: '', ru: '', en: '' },
 })
 
+const languages = ['uz', 'ru', 'en']
+
 const tab = ref('uz')
 const isOpen = ref(false)
 
@@ -112,27 +114,29 @@ watch(isOpen, (newVal) => {
             <TabsTrigger value="ru"> Русский </TabsTrigger>
             <TabsTrigger value="en"> English </TabsTrigger>
           </TabsList>
-          <VForm @submit="handleSubmitForm" v-slot="{ errors }">
-            <div class="grid md:grid-cols-12 gap-5">
-              <div class="grid md:col-span-12 w-full items-center gap-1.5">
-                <VField :name="`title.${tab}`" rules="required" v-model="form.title[tab]">
-                  <Label :for="`title.${tab}`">Sarlavha</Label>
-                  <Input :id="`title.${tab}`" type="text" v-model="form.title[tab]" :error="errors?.[`title.${tab}`]" />
-                </VField>
+          <TabsContent :value="lang" v-for="lang in languages" :key="lang" v-show="tab === lang">
+            <VForm @submit="handleSubmitForm" v-slot="{ errors }">
+              <div class="grid md:grid-cols-12 gap-5">
+                <div class="grid md:col-span-12 w-full items-center gap-1.5">
+                  <VField :name="`title.${tab}`" rules="required" v-model="form.title[tab]">
+                    <Label :for="`title.${tab}`">Sarlavha</Label>
+                    <Input :id="`title.${tab}`" type="text" v-model="form.title[tab]" :error="errors?.[`title.${tab}`]" />
+                  </VField>
+                </div>
+                <div class="grid md:col-span-12 w-full items-center">
+                  <VField :name="`description.${tab}`" rules="required" v-model="form.description[tab]">
+                    <Label :for="`description.${tab}`" class="mb-1.5">Tasnif</Label>
+                    <ClientOnly>
+                      <QuillWrapper class="w-full" contentType="html" theme="snow" v-model:content="form.description[tab]" placeholder="Matnni shu yerga yozing..." />
+                    </ClientOnly>
+                  </VField>
+                </div>
               </div>
-              <div class="grid md:col-span-12 w-full items-center">
-                <VField :name="`description.${tab}`" rules="required" v-model="form.description[tab]">
-                  <Label :for="`description.${tab}`" class="mb-1.5">Tasnif</Label>
-                  <ClientOnly>
-                    <QuillWrapper class="w-full" contentType="html" theme="snow" v-model:content="form.description[tab]" placeholder="Matnni shu yerga yozing..." />
-                  </ClientOnly>
-                </VField>
+              <div class="flex justify-end">
+                <Button size="lg" type="submit" class="mt-6" :loading="loading">Saqlash</Button>
               </div>
-            </div>
-            <div class="flex justify-end">
-              <Button size="lg" type="submit" class="mt-6" :loading="loading">Saqlash</Button>
-            </div>
-          </VForm>
+            </VForm>
+          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
