@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight mb-6">Standard qo'shish</h1>
     <div class="flex justify-end mt-5">
-      <ModalStandardCreate />
+      <ModalStandardCreate @create-standard="handleAddStandard" />
     </div>
     <div class="border mt-10 rounded-xl">
       <Table>
@@ -28,8 +28,8 @@
               {{ $dayjs(item.createdAt).format('DD.MM.YYYY HH:mm:ss') }}
             </TableCell>
             <TableCell class="flex items-center gap-2">
-              <ModalStandardEdit :standardId="item._id" @edit-standard="handleEditSector" />
-              <ModalStandardDelete :standardId="item._id" @delete-standard="handleDeleteSector" />
+              <ModalStandardEdit :standardId="item._id" @edit-standard="handleEditStandard" />
+              <ModalStandardDelete :standardId="item._id" @delete-standard="handleDeleteStandard" />
             </TableCell>
           </TableRow>
         </TableBody>
@@ -55,15 +55,15 @@ const handlePageChange = (page) => {
   currentPage.value = page
 }
 
-const handleAddSector = async () => {
+const handleAddStandard = async () => {
   refresh()
 }
 
-const handleDeleteSector = async () => {
+const handleDeleteStandard = async () => {
   refresh()
 }
 
-const handleEditSector = async () => {
+const handleEditStandard = async () => {
   refresh()
 }
 

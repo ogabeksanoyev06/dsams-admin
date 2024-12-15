@@ -24,7 +24,7 @@ const confirmDelete = async () => {
     const res = await deleteStandardById(props.standardId)
     if (res.status) {
       showToast("Standard o'chirildi.", 'success')
-      emit('delete-sector')
+      emit('delete-standard')
       isOpen.value = false
     }
   } catch (error) {
