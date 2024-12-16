@@ -22,10 +22,10 @@
               {{ key + 1 }}
             </TableCell>
             <TableCell>
-              {{ item.title_uz }}
+              {{ item.title }}
             </TableCell>
             <TableCell>
-              <div v-html="item.description_uz" />
+              <div v-html="item.description" />
             </TableCell>
             <TableCell>
               {{ $dayjs(item.createdAt).format('DD.MM.YYYY HH:mm:ss') }}

@@ -35,6 +35,7 @@
           <TableHead>Status</TableHead>
           <TableHead class="text-right">Amallar</TableHead>
         </TableRow>
+     
       </TableHeader>
       <TableBody>
         <TableRow v-for="(item, i) in applications.data" :key="item._id" class="odd:bg-accent">

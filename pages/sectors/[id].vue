@@ -77,6 +77,7 @@ const {
 } = await useAsyncData('sector-by-id', async () => {
   return await getSections({
     lang: locale.value,
+    limit: 100,
     'filter[sektor]': route.params.id,
   })
 })
