@@ -5,6 +5,7 @@ export const useApplicationsStore = defineStore('applications', () => {
   const api = useApi()
 
   const loading = ref(false)
+  const questionsWithAnswers = ref([])
 
   const getApplications = async (params) => {
     loading.value = true
@@ -73,5 +74,6 @@ export const useApplicationsStore = defineStore('applications', () => {
     completeApplication,
     approveApplication,
     cancelApplication,
+    questionsWithAnswers,
   }
 })
